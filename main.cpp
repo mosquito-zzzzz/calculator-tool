@@ -10,12 +10,10 @@ int main(int argc, char *argv[]) {
 
   struct option long_options[] = {
       {"help", no_argument, 0, 'h'},
-      {"add", no_argument, 0, 'a'},
-      {"sub", no_argument, 0, 's'},
-      {"mul", no_argument, 0, 'm'},
-      {"div", no_argument, 0, 'd'},
-      {"num1", required_argument, 0, 'x'},
-      {"num2", required_argument, 0, 'y'},
+      {"add", required_argument, 0, 'a'},
+      {"sub", required_argument, 0, 's'},
+      {"mul", required_argument, 0, 'm'},
+      {"div", required_argument, 0, 'd'},
       {0, 0, 0, 0}};  // specifies the end of the array.
 
   int opt;
@@ -35,22 +33,17 @@ int main(int argc, char *argv[]) {
                   << "  --num2, -y <num2>  Second number\n";
         return 0;
       case 'a':
-        operation = 1;
-        break;
       case 's':
-        operation = 2;
-        break;
       case 'm':
-        operation = 3;
-        break;
       case 'd':
-        operation = 4;
-        break;
-      case 'x':
-        num1 = atoi(optarg);  // atoi(optarg) converts the string to an integer
-        break;
-      case 'y':
-        num2 = atoi(optarg);  // atoi(optarg) converts the string to an integer
+        if (optind + 2 <= argc) {
+          num1 = atoi(argv[optind]);
+          num2 = atoi(argv[optind + 1]);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
         break;
       default:
         std::cerr << "Invalid option. Use --help for usage information."
@@ -61,17 +54,17 @@ int main(int argc, char *argv[]) {
 
   // Perform the operation based on the flag
   int result = 0;
-  switch (operation) {
-    case 1:
+  switch (opt) {
+    case 'a':
       result = num1 + num2;
       break;
-    case 2:
+    case 's':
       result = num1 - num2;
       break;
-    case 3:
+    case 'm':
       result = num1 * num2;
       break;
-    case 4:
+    case 'd':
       result = num1 / num2;
       break;
     default:
