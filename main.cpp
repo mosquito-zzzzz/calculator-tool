@@ -4,9 +4,9 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-  int operation = 0;
-  int num1 = 0;
-  int num2 = 0;
+  short int operation{0};
+  long double num1 = 0;
+  long double num2 = 0;
 
   struct option long_options[] = {
       {"help", no_argument, 0, 'h'},
@@ -16,27 +16,24 @@ int main(int argc, char *argv[]) {
       {"div", required_argument, 0, 'd'},
       {0, 0, 0, 0}};  // specifies the end of the array.
 
-  int opt;
+  int opt{0};
   int option_index = 0;
-  while ((opt = getopt_long(argc, argv, "hasmdx:y:", long_options,
+  while ((opt = getopt_long(argc, argv, "ha:s:m:d:", long_options,
                             &option_index)) != -1) {
     switch (opt) {
       case 'h':
-        std::cout << "Usage: " << argv[0] << " [options]\n"
+        std::cout << "Usage: " << argv[0] << " [options]* [x] [y]\n"
                   << "Options:\n"
                   << "  --help, -h     Show this help message and exit\n"
                   << "  --add, -a      Add two numbers\n"
                   << "  --sub, -s      Subtract two numbers\n"
                   << "  --mul, -m      Multiply two numbers\n"
-                  << "  --div, -d      Divide two numbers\n"
-                  << "  --num1, -x <num1>  First number\n"
-                  << "  --num2, -y <num2>  Second number\n";
+                  << "  --div, -d      Divide two numbers\n";
         return 0;
+
       case 'a':
-      case 's':
-      case 'm':
-      case 'd':
-        if (optind + 2 <= argc) {
+      operation = 1;
+      if (optind + 2 <= argc) {
           num1 = atoi(argv[optind]);
           num2 = atoi(argv[optind + 1]);
         } else {
@@ -45,6 +42,43 @@ int main(int argc, char *argv[]) {
           return 1;
         }
         break;
+
+      case 's':
+      operation = 2;
+      if (optind + 1 <= argc) {
+          num1 = atoi(argv[optind]);
+          num2 = atoi(argv[optind + 1]);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
+        break;
+
+      case 'm':
+      operation = 3;
+      if (optind + 1 <= argc) {
+          num1 = atoi(argv[optind]);
+          num2 = atoi(argv[optind + 1]);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
+        break;
+
+      case 'd':
+      operation = 4;
+        if (optind + 1 <= argc) {
+          num1 = atoi(argv[optind]);
+          num2 = atoi(argv[optind + 1]);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
+        break;
+
       default:
         std::cerr << "Invalid option. Use --help for usage information."
                   << std::endl;
@@ -53,18 +87,18 @@ int main(int argc, char *argv[]) {
   }
 
   // Perform the operation based on the flag
-  int result = 0;
-  switch (opt) {
-    case 'a':
+  int result;
+  switch (operation) {
+    case 1:
       result = num1 + num2;
       break;
-    case 's':
+    case 2:
       result = num1 - num2;
       break;
-    case 'm':
+    case 3:
       result = num1 * num2;
       break;
-    case 'd':
+    case 4:
       result = num1 / num2;
       break;
     default:
@@ -74,9 +108,10 @@ int main(int argc, char *argv[]) {
   }
 
   std::cout << "Result: " << result << std::endl;
-
+        
   return 0;
 }
+
 
 int num_guessing_game() {
   short num, guess;
