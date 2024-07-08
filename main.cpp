@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Perform the operation based on the flag
-  int result;
+  long double result;
   switch (operation) {
     case 1:
       result = num1 + num2;
