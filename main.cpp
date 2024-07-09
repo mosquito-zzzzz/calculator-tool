@@ -8,6 +8,7 @@ int num_guessing_game(int num1);
 int main(int argc, char *argv[]) {
   short int operation{0};
   bool is_guess{false};
+  bool opt_is_chosen{true};
   long double num1 = 0;
   long double num2 = 0;
 
@@ -26,54 +27,77 @@ int main(int argc, char *argv[]) {
                             &option_index)) != -1) {
     switch (opt) {
       case 'h':
-        std::cout << "Usage: " << argv[0] << " [options] [x] [y]\n"
+        std::cout << "Usage: " << argv[0] << " [options] [x] [y]*\n"
                   << "Options:\n"
                   << "  --help, -h     Show this help message and exit\n"
                   << "  --add, -a      Add two numbers\n"
                   << "  --sub, -s      Subtract two numbers\n"
                   << "  --mul, -m      Multiply two numbers\n"
                   << "  --div, -d      Divide two numbers\n"
-                  << "  --guess -g     Number guessing game\n";
+                  << "  --guess -g     Number guessing game\n"
+                  << "  * the second number is unecessery if you want to guess";
         return 0;
 
       case 'a':
         operation = 1;
+        if (optind + 2 <= argc) {
+          num1 = std::strtold(argv[optind], nullptr);
+          num2 = std::strtold(argv[optind + 1], nullptr);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
         break;
 
       case 's':
         operation = 2;
+        if (optind + 2 <= argc) {
+          num1 = std::strtold(argv[optind], nullptr);
+          num2 = std::strtold(argv[optind + 1], nullptr);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
         break;
 
       case 'm':
         operation = 3;
+        if (optind + 2 <= argc) {
+          num1 = std::strtold(argv[optind], nullptr);
+          num2 = std::strtold(argv[optind + 1], nullptr);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
         break;
 
       case 'd':
         operation = 4;
+        if (optind + 2 <= argc) {
+          num1 = std::strtold(argv[optind], nullptr);
+          num2 = std::strtold(argv[optind + 1], nullptr);
+        } else {
+          std::cerr << "Please provide two numbers after the operation."
+                    << std::endl;
+          return 1;
+        }
         break;
 
       case 'g':
         operation = 5;
-        is_guess = true;
+
+        num1 = std::strtold(argv[optind], nullptr);
         break;
 
       default:
         std::cerr << "Invalid option. Use --help for usage information."
                   << std::endl;
+        opt_is_chosen = false;
         return 1;
     }
-  }
-  if (is_guess == false) {
-    if (optind + 2 <= argc) {
-      num1 = std::strtold(argv[optind], nullptr);
-      num2 = std::strtold(argv[optind + 1], nullptr);
-    } else {
-      std::cerr << "Please provide two numbers after the operation."
-                << std::endl;
-      return 1;
-    }
-  } else {
-    num1 = std::strtold(argv[optind], nullptr);
   }
 
   // Perform the operation based on the flag
