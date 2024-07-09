@@ -2,10 +2,12 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <random>
+
+int num_guessing_game(int num1);
 
 int main(int argc, char *argv[]) {
   short int operation{0};
+  bool is_guess{false};
   long double num1 = 0;
   long double num2 = 0;
 
@@ -15,21 +17,23 @@ int main(int argc, char *argv[]) {
       {"sub", no_argument, 0, 's'},
       {"mul", no_argument, 0, 'm'},
       {"div", no_argument, 0, 'd'},
+      {"guess", no_argument, 0, 'g'},
       {0, 0, 0, 0}};  // specifies the end of the array.
 
   int opt{0};
   int option_index = 0;
-  while ((opt = getopt_long(argc, argv, "hasmd", long_options,
+  while ((opt = getopt_long(argc, argv, "hasmdg", long_options,
                             &option_index)) != -1) {
     switch (opt) {
       case 'h':
-        std::cout << "Usage: " << argv[0] << " [options]* [x] [y]\n"
+        std::cout << "Usage: " << argv[0] << " [options] [x] [y]\n"
                   << "Options:\n"
                   << "  --help, -h     Show this help message and exit\n"
                   << "  --add, -a      Add two numbers\n"
                   << "  --sub, -s      Subtract two numbers\n"
                   << "  --mul, -m      Multiply two numbers\n"
-                  << "  --div, -d      Divide two numbers\n";
+                  << "  --div, -d      Divide two numbers\n"
+                  << "  --guess -g     Number guessing game\n";
         return 0;
 
       case 'a':
@@ -48,18 +52,28 @@ int main(int argc, char *argv[]) {
         operation = 4;
         break;
 
+      case 'g':
+        operation = 5;
+        is_guess = true;
+        break;
+
       default:
         std::cerr << "Invalid option. Use --help for usage information."
                   << std::endl;
         return 1;
     }
   }
-  if (optind + 2 <= argc) {
-    num1 = std::strtold(argv[optind], nullptr);
-    num2 = std::strtold(argv[optind + 1], nullptr);
+  if (is_guess == false) {
+    if (optind + 2 <= argc) {
+      num1 = std::strtold(argv[optind], nullptr);
+      num2 = std::strtold(argv[optind + 1], nullptr);
+    } else {
+      std::cerr << "Please provide two numbers after the operation."
+                << std::endl;
+      return 1;
+    }
   } else {
-    std::cerr << "Please provide two numbers after the operation." << std::endl;
-    return 1;
+    num1 = std::strtold(argv[optind], nullptr);
   }
 
   // Perform the operation based on the flag
@@ -77,25 +91,30 @@ int main(int argc, char *argv[]) {
     case 4:
       result = num1 / num2;
       break;
+    case 5:
+      num_guessing_game(num1);
+      break;
     default:
       std::cerr << "Invalid operation. Use --help for usage information."
                 << std::endl;
       return 1;
   }
-
-  std::cout << "Result: " << result << std::endl;
+  if (is_guess == false) {
+    std::cout << "Result: " << result << std::endl;
+    return 0;
+  }
 
   return 0;
 }
 
-int num_guessing_game() {
+int num_guessing_game(int num1) {
   short num, guess;
   unsigned int tries = 1;
 
   srand(time(NULL));
-  num = (rand() % 100) + 1;
+  num = (rand() % num1) + 1;
 
-  std::cout << "Enter a guess between 1 and 100: " << "\n";
+  std::cout << "Enter a guess between 1 and " << num1 << ": " << "\n";
 
   do {
     std::cin >> guess;
