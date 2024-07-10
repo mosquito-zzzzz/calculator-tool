@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 inline int num_guessing_game(int num1) {

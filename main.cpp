@@ -17,24 +17,26 @@ int main(int argc, char *argv[]) {
       {"sub", no_argument, 0, 's'},
       {"mul", no_argument, 0, 'm'},
       {"div", no_argument, 0, 'd'},
+      {"percent", no_argument, 0, 'p'},
       {"guess", no_argument, 0, 'g'},
       {0, 0, 0, 0}};  // specifies the end of the array.
 
   int opt{0};
   int option_index = 0;
-  while ((opt = getopt_long(argc, argv, "hasmdg", long_options,
+  while ((opt = getopt_long(argc, argv, "hasmdpg", long_options,
                             &option_index)) != -1) {
     switch (opt) {
       case 'h':
-        std::cout << "Usage: " << argv[0] << " [options] [x] [y]*\n"
+        std::cout << "Usage: " << argv[0] << " [options] [x] [y]\n"
                   << "Options:\n"
                   << "  --help, -h     Show this help message and exit\n"
                   << "  --add, -a      Add two numbers\n"
                   << "  --sub, -s      Subtract two numbers\n"
                   << "  --mul, -m      Multiply two numbers\n"
                   << "  --div, -d      Divide two numbers\n"
-                  << "  --guess -g     Number guessing game\n"
-                  << "  * the second number is unecessery if you want to guess";
+                  << "  --percent -p   Calculate percentage of a number\n"
+                  << "  --guess -g     Number guessing game *\n"
+                  << "  * the second number is unecessery";
         return 0;
 
       case 'a':
@@ -85,10 +87,27 @@ int main(int argc, char *argv[]) {
         }
         break;
 
-      case 'g':
+      case 'p':
         operation = 5;
+        if (optind + 2 <= argc) {
+          num1 = std::strtold(argv[optind], nullptr);
+          num2 = std::strtold(argv[optind + 1], nullptr);
+        } else {
+          std::cerr << "Please provide a number after the operation."
+                    << std::endl;
+          return 1;
+        }
+        break;
 
-        num1 = std::strtold(argv[optind], nullptr);
+      case 'g':
+        operation = 6;
+        if (optind + 1 <= argc) {
+          num1 = std::strtold(argv[optind], nullptr);
+        } else {
+          std::cerr << "Please provide a number after the operation."
+                    << std::endl;
+          return 1;
+        }
         is_guess = true;
         break;
 
@@ -115,6 +134,9 @@ int main(int argc, char *argv[]) {
       result = num1 / num2;
       break;
     case 5:
+      result = num1 * (num2 / 100);
+      break;
+    case 6:
       num_guessing_game(num1);
       break;
     default:
