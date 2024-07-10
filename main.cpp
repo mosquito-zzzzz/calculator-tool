@@ -8,7 +8,6 @@ int num_guessing_game(int num1);
 int main(int argc, char *argv[]) {
   short int operation{0};
   bool is_guess{false};
-  bool opt_is_chosen{true};
   long double num1 = 0;
   long double num2 = 0;
 
@@ -90,12 +89,12 @@ int main(int argc, char *argv[]) {
         operation = 5;
 
         num1 = std::strtold(argv[optind], nullptr);
+        is_guess = true;
         break;
 
       default:
         std::cerr << "Invalid option. Use --help for usage information."
                   << std::endl;
-        opt_is_chosen = false;
         return 1;
     }
   }
